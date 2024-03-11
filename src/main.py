@@ -5,7 +5,7 @@ from drawer import OrthoDrawer, PerspectiveDrawer
 
 
 def main():
-    generate_animation_02()
+    generate_animation_04()
     
 def generate_animation_01():
     cube = SimplestCube(0.5)
@@ -29,7 +29,7 @@ def generate_animation_04():
     cube = SimplestCube(0.5)
     drawer = PerspectiveDrawer("src\drawing_annotations\\animation04.txt", -1.5)
     animator = FigureAnimator(20)
-    animator.animate_sequence_03(cube, drawer)
+    animator.animate_sequence_02(cube, drawer)
     
 if __name__ == "__main__":
     main()

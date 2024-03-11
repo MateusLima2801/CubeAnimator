@@ -1,7 +1,7 @@
 
 from io import TextIOWrapper
 from components.figure import Figure
-from components.line import Line, are_lines_crossing, check_intersection
+from components.line import Line, equal
 from components.point import Point
 from components.transformator import Transformator
 
@@ -9,6 +9,7 @@ from components.transformator import Transformator
 class Drawer:
     output_name: str
     output: TextIOWrapper
+    z_axis = Point(0,0,1)
     
     def __init__(self, output_name: str):
         self.output_name = output_name
@@ -37,21 +38,15 @@ class Drawer:
         proj = self.project_line(l)
         return proj.to_2D_string()
     
-    def reset_hidden_lines(self, figure: Figure):
-        figure.set_figure_lines()
-        figure.lines.sort(key=lambda l: max(l.p1.z, l.p2.z), reverse=True)
-        projected_figure = self.get_projected_figure(figure)
-        
-        for i, l in enumerate(projected_figure.lines):
-            if l.get_segment_size() == 0:
-                figure.lines[i].set_draw(False)
-                
-        for i, l1 in enumerate(projected_figure.lines):
-            for j, l2 in enumerate(projected_figure.lines[i+1:]):
-                if figure.lines[i].draw == False: break
-                if figure.lines[i+j+1].draw and check_intersection(l1, l2):
-                    figure.lines[i+j+1].set_draw(False)
- 
+    def reset_hidden_lines(self, figure: Figure) -> Figure:
+        figure.set_figure_lines(False)
+        for surf in figure.surfaces:
+            if self.z_axis.escalar_product(surf.normal_vector) > 0:
+                for j, line in enumerate(figure.lines):
+                    if surf.contains_line(line):
+                        figure.lines[j].draw = True 
+        return figure
+    
     def get_projected_figure(self, figure: Figure) -> Figure:
         lines = figure.lines.copy()
         for j, line in enumerate(lines):

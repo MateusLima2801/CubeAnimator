@@ -20,11 +20,11 @@ class Point:
     def __mul__(self, num: float) -> Point:
         return Point(self.x * num, self.y * num, self.z * num)
     
-    def __div__(self, num: float) -> Point:
+    def __div__(self, num: float | int) -> Point:
         if num == 0:
             raise ZeroDivisionError()
         return Point(self.x / num, self.y / num, self.z / num)
-        
+    
     def __eq__(self, other: Point) -> bool:
         return self.x == other.x and self.y == other.y and self.z == other.z
     
@@ -43,10 +43,28 @@ class Point:
     def normalize(self) -> Point:
         norm = self.get_norm()
         if norm > 0:
-            self.x /= norm
-            self.y /= norm
-            self.z /= norm
-        return self
+            return self.__div__(norm)
+        else: return self
             
-    def vectorial_product(self, other: Point) -> float:
+    def escalar_product(self, other: Point) -> float:
         return self.x *other.x + self.y * other.y + self.z * other.z
+    
+    def vectorial_product(self, other: Point) -> Point:
+        return Point(self.y * other.z - other.y*self.z,
+                     self.z * other.x - self.x * other.z,
+                     self.x * other.y - self.y * other.z)
+        
+    def get_point_projection(self, p: Point) -> Point:
+        if self.is_origin(): return self
+        return self * (self.escalar_product(p) / self.escalar_product(self))
+        
+    @staticmethod
+    def calculate_centroid(points: list[Point]):
+        if points == None: return None
+        centroid = Point(0,0,0)
+        for p in points:
+            centroid += p
+        return centroid.__div__(len(points))
+    
+    def to_string(self):
+        return f"( {self.x}, {self.y}, {self.z})"

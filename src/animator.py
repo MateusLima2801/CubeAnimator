@@ -34,15 +34,3 @@ class FigureAnimator:
             figure.apply_rotation(rotation)
         drawer.close_file()
         
-    def animate_sequence_03(self, cube: Cube, drawer: Drawer):
-        rotation = Rotation(Point(1,1,1), 2)
-        drawer.open_file()
-        for i in range(self.frame_amount):
-            cube.reset_hidden_lines()
-            drawer.draw_figure(cube)
-            drawer.draw_delay(self.delay)
-            drawer.clean_screen()
-            cube.apply_rotation(rotation)
-            cube.set_figure_lines()
-        drawer.close_file()
-        

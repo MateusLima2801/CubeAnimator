@@ -1,5 +1,6 @@
 from components.line import Line
 from components.point import Point
+from components.polygonal_surface import PolygonalSurface
 from components.rotation import Rotation
 
 class Transformator:
@@ -20,6 +21,13 @@ class Transformator:
     @staticmethod
     def rotate_line(l: Line, rotation: Rotation) -> Line:
         return Line(Transformator.rotate_point(l.p1, rotation), Transformator.rotate_point(l.p2, rotation))
+    
+    @staticmethod
+    def rotate_surface(s: PolygonalSurface, rotation: Rotation) -> PolygonalSurface:
+        lines = []
+        for l in s.lines:
+            lines.append(Transformator.rotate_line(l, rotation))
+        return PolygonalSurface(lines)
     
     @staticmethod
     def project_point_with_perspective(p: Point, focus_distance: float)-> Point:

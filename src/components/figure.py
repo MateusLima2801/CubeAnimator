@@ -1,24 +1,34 @@
+from numpy import mean
+from components.polygonal_surface import PolygonalSurface
 from components.rotation import Rotation
-from components.line import Line
+from components.line import Line, calculate_points
 from components.point import Point
 from components.transformator import Transformator
 
 class Figure:
     lines: list[Line]
     points: list[Point]
-    
-    def __init__(self):
-        raise NotImplementedError()
+    centroid: Point
+    surfaces: list[PolygonalSurface]
     
     def __init__(self, lines: list[Line]):
         self.lines = lines
+        self.points = calculate_points(lines)
+        self.centroid = Point.calculate_centroid(self.points)
         
     def apply_rotation(self, rotation: Rotation):
         for i, point in enumerate(self.points):
             self.points[i] = Transformator.rotate_point(point, rotation)
+        
+        self.centroid = Point.calculate_centroid(self.points)
     
         for j, line in enumerate(self.lines):
             self.lines[j] = Transformator.rotate_line(line, rotation)
+            
+        for j, surface in enumerate(self.surfaces):
+            s = Transformator.rotate_surface(surface, rotation)
+            s.calculate_normal_vector(self.centroid)
+            self.surfaces[j] = s
             
     def apply_translation(self, translation: Point):
         for i, point in enumerate(self.points):
@@ -27,9 +37,9 @@ class Figure:
         for j, line in enumerate(self.lines):
             self.lines[j] = Transformator.translate_line(line, translation)
             
-    def set_figure_lines(self):
+    def set_figure_lines(self, draw: bool = True):
         for i in range(len(self.lines)):
-            self.lines[i].set_draw(True)
+            self.lines[i].set_draw(draw)
             
     @staticmethod
     def generate_min_lines(points: list[Point]):
