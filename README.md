@@ -1,0 +1,1 @@
+The annotation files are available at 'src/drawing_annotations' folder.
