@@ -1,4 +1,3 @@
-from components.cube import Cube
 from components.point import Point
 from components.rotation import Rotation
 from components.figure import Figure
