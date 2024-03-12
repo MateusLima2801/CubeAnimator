@@ -30,23 +30,27 @@ class Transformator:
         return PolygonalSurface(lines)
     
     @staticmethod
-    def project_point_with_perspective(p: Point, focus_distance: float)-> Point:
+    def project_point_with_perspective(p: Point, focus_distance: float, unproject: bool = False)-> Point:
+        z = 0
+        if unproject: z = p.z
         factor = focus_distance / ( p.z + focus_distance )
-        return Point(p.x * factor, p.y * factor, 0)
+        return Point(p.x * factor, p.y * factor, z)
     
     @staticmethod
-    def project_line_with_perspective(l: Line, focus_distance: float) -> Line:
-        p1 = Transformator.project_point_with_perspective(l.p1, focus_distance)
-        p2 = Transformator.project_point_with_perspective(l.p2, focus_distance)
-        return Line(p1,p2)
+    def project_line_with_perspective(l: Line, focus_distance: float, unproject: bool = False) -> Line:
+        p1 = Transformator.project_point_with_perspective(l.p1, focus_distance, unproject)
+        p2 = Transformator.project_point_with_perspective(l.p2, focus_distance, unproject)
+        return Line(p1,p2,l.draw)
     
     @staticmethod
-    def project_point_orthogonally(p: Point)-> Point:
-        return Point(p.x, p.y, 0)
+    def project_point_orthogonally(p: Point, unproject: bool = False)-> Point:
+        z = 0
+        if unproject: z = p.z
+        return Point(p.x, p.y, z)
     
     @staticmethod
-    def project_line_orthogonally(l: Line) -> Line:
-        p1 = Transformator.project_point_orthogonally(l.p1)
-        p2 = Transformator.project_point_orthogonally(l.p2)
+    def project_line_orthogonally(l: Line, unproject: bool = False) -> Line:
+        p1 = Transformator.project_point_orthogonally(l.p1, unproject)
+        p2 = Transformator.project_point_orthogonally(l.p2, unproject)
         return Line(p1,p2)
         

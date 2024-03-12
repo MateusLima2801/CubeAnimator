@@ -3,11 +3,12 @@ from components.point import Point
 class Line:
     p1: Point
     p2: Point
-    draw: bool = True
+    draw: bool
     
-    def __init__(self, p1, p2) -> None:
+    def __init__(self, p1: Point, p2: Point, draw: bool = True) -> None:
         self.p1 = p1
         self.p2 = p2
+        self.draw = draw
         
     def passes_by_origin(self) -> bool:
         return self.p1.is_multiple(self.p2)

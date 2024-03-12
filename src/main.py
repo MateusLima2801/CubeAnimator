@@ -1,10 +1,14 @@
 
 from animator import FigureAnimator
 from components.cube import SimplestCube
+from components.point import Point
 from drawer import OrthoDrawer, PerspectiveDrawer
 
 
 def main():
+    generate_animation_01()
+    generate_animation_02()
+    generate_animation_03()
     generate_animation_04()
     
 def generate_animation_01():
@@ -28,7 +32,7 @@ def generate_animation_03():
 def generate_animation_04():
     cube = SimplestCube(0.5)
     drawer = PerspectiveDrawer("src\drawing_annotations\\animation04.txt", -1.5)
-    animator = FigureAnimator(20)
+    animator = FigureAnimator(60)
     animator.animate_sequence_02(cube, drawer)
     
 if __name__ == "__main__":

@@ -3,6 +3,7 @@ from io import TextIOWrapper
 from components.figure import Figure
 from components.line import Line, equal
 from components.point import Point
+from components.polygonal_surface import PolygonalSurface
 from components.transformator import Transformator
 
 
@@ -40,29 +41,39 @@ class Drawer:
     
     def reset_hidden_lines(self, figure: Figure) -> Figure:
         figure.set_figure_lines(False)
+        proj_figure = self.get_projected_figure(figure, unproject=True)
         for surf in figure.surfaces:
-            if self.z_axis.escalar_product(surf.normal_vector) > 0:
+            ## use projected surface
+            proj_surf = self.get_projected_surface(surf, unproject=True)
+            proj_surf.calculate_normal_vector(proj_figure.centroid)
+            if self.z_axis.escalar_product(proj_surf.normal_vector) > 0:
                 for j, line in enumerate(figure.lines):
                     if surf.contains_line(line):
                         figure.lines[j].draw = True 
         return figure
     
-    def get_projected_figure(self, figure: Figure) -> Figure:
+    def get_projected_figure(self, figure: Figure, unproject: bool = False) -> Figure:
         lines = figure.lines.copy()
         for j, line in enumerate(lines):
-            lines[j] = self.project_line(line)
+            lines[j] = self.project_line(line, unproject)
         return Figure(lines)
     
-    def project_line(self, l: Line) -> Line:
-        raise NotImplementedError()   
+    def get_projected_surface(self, surf: PolygonalSurface, unproject: bool = False) -> PolygonalSurface:
+        lines = surf.lines.copy()
+        for j, line in enumerate(lines):
+            lines[j] = self.project_line(line, unproject)
+        return PolygonalSurface(lines)
+    
+    def project_line(self, l: Line, unproject: bool = False) -> Line:
+        raise NotImplementedError()  
+    
         
 class OrthoDrawer(Drawer):
-    
     def __init__(self, output_name: str):
         super().__init__(output_name)
     
-    def project_line(self, l: Line) -> Line:
-        return Transformator.project_line_orthogonally(l)
+    def project_line(self, l: Line, unproject: bool = False) -> Line:
+        return Transformator.project_line_orthogonally(l, unproject)
     
 class PerspectiveDrawer(Drawer):
     focus_distance: float 
@@ -71,8 +82,8 @@ class PerspectiveDrawer(Drawer):
         super().__init__(output_name)
         self.focus_distance = focus_distance
         
-    def project_line(self, l: Line) -> Line:
-        return Transformator.project_line_with_perspective(l,self.focus_distance)
+    def project_line(self, l: Line, unproject: bool = False) -> Line:
+        return Transformator.project_line_with_perspective(l,self.focus_distance, unproject)
     
     
     
