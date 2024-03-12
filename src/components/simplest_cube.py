@@ -3,13 +3,8 @@ from components.point import Point
 from components.figure import Figure
 from components.polygonal_surface import PolygonalSurface
 
-class Cube(Figure): 
+class SimplestCube(Figure):
     side: float
-    
-    def __init__(self):
-        raise NotImplementedError()
-
-class SimplestCube(Cube):
     
     def __init__(self, side: float):
         if side == 0:

@@ -57,7 +57,6 @@ class Line:
 def equal(l1: Line, l2: Line):
     return ( l1.p1 == l2.p1 and l1.p2 == l2.p2 ) or ( l1.p2 == l2.p1 and l1.p1 == l2.p2 ) 
     
-@staticmethod
 def calculate_points(lines: list[Line]):
     points = []
     for l in lines:

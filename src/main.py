@@ -1,6 +1,6 @@
 
 from animator import FigureAnimator
-from components.cube import SimplestCube
+from components.simplest_cube import SimplestCube
 from components.point import Point
 from drawer import OrthoDrawer, PerspectiveDrawer
 
